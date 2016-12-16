@@ -65,7 +65,7 @@ begin
                       end;
          end;
      if Result = -1
-        then raise EInvalidOperation.Create('Invalid Operation: Loop ends without starting.');
+        then raise EInvalidOperation.Create(Format('Invalid Operation: Loop at %d ends without starting.', [FIndex]));
 end;
 
 function TBFProgram.FindLoopStop: Integer;
@@ -85,7 +85,7 @@ begin
                       end;
          end;
      if Result = -1
-        then raise EInvalidOperation.Create('Invalid Operation: Loop has no end.');
+        then raise EInvalidOperation.Create(Format('Invalid Operation: Loop at %d has no end.', [FIndex]));
 end;
 
 class function TBFProgram.New(Source: String): IBFProgram;
