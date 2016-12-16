@@ -11,13 +11,13 @@ uses
 type
     IBFProgram = Interface ['{56E9D1C7-756B-4C96-9F7F-A66FE2A5BE06}']
       function Run: IBFProgram;
-      function Output: AnsiString;
+      function Output: String;
     End;
 
     TBFProgram = Class(TInterfacedObject, IBFProgram)
     private
-      FSource: AnsiString;
-      FOutput: AnsiString;
+      FSource: String;
+      FOutput: String;
       FStack: IStack;
       FLoops: TList<LongWord>;
       FIndex: LongWord;
@@ -30,7 +30,7 @@ type
       class function New(Source: String): IBFProgram;
       class function NewFromFile(SourceFile: TFileName): IBFProgram;
       function Run: IBFProgram;
-      function Output: AnsiString;
+      function Output: String;
     End;
 
 implementation
@@ -110,7 +110,7 @@ begin
      end;
 end;
 
-function TBFProgram.Output: AnsiString;
+function TBFProgram.Output: String;
 begin
      Result := FOutput;
 end;
