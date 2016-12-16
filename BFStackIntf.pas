@@ -20,7 +20,13 @@ type
       function Value: Byte;
     End;
 
-    TBFCommand    = (bfLeft, bfRight, bfAdd, bfSub, bfWrite, bfRead, bfLoopStart, bfLoopStop);
+    TBFCommand = (bfLeft=0, bfRight, bfAdd, bfSub, bfWrite, bfRead, bfLoopStart, bfLoopStop);
+    IBFCommandList = Interface ['{DE71F770-9527-4AFA-BCC6-F857AAEE229C}']
+      function TokenSize: Byte;
+      function Item(Idx: Byte): TBFCommand; Overload;
+      function Item(Token: String): TBFCommand; Overload;
+    End;
+
     IBFSource = Interface ['{FF053E57-BB4D-4F22-BA67-C4092F4C93A8}']
       function Cmd: TBFCommand;
       function IsValid: Boolean;

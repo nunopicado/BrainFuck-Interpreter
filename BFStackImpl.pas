@@ -4,6 +4,7 @@ interface
 
 uses
     Generics.Collections
+  , Classes
   , BFStackIntf
   ;
 
@@ -42,6 +43,19 @@ type
       function Value: Byte;
     End;
 
+    TBFCommandList = Class(TInterfacedObject, IBFCommandList)
+    strict private
+      FCmdList   : TStringList;
+      FTokenSize : Byte;
+    public
+      constructor Create(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String);
+      destructor Destroy; Override;
+      class function New(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String): IBFCommandList;
+      function TokenSize: Byte;
+      function Item(Idx: Byte): TBFCommand; Overload;
+      function Item(Token: String): TBFCommand; Overload;
+    End;
+
     TBFProgram = Class(TInterfacedObject, IBFProgram)
     private
       FSource: IBFSource;
@@ -53,6 +67,22 @@ type
       class function New(BFSource: IBFSource): IBFProgram;
       function Run(Input: IBFInput): IBFProgram;
       function Output: String;
+    End;
+
+    TBFSource = Class(TInterfacedObject, IBFSource)
+    strict private // Fields
+      FCmdList : IBFCommandList;
+      FSource  : String;
+      FIdx     : LongWord;
+    strict private // Methods
+      function Token(Idx: LongWord = 0): String;
+    public
+      constructor Create(CmdList: IBFCommandList; Source: String);
+      class function New(CmdList: IBFCommandList; Source: String): IBFSource;
+      function Cmd: TBFCommand;
+      function IsValid: Boolean;
+      function SkipLoop: IBFSource;
+      function RestartLoop: IBFSource;
     End;
 
 implementation
@@ -129,7 +159,7 @@ function TBFStack.MoveRight: IBFStack;
 begin
      Result := Self;
      Inc(FIdx);
-     if FIdx = FCells.Count
+     if FIdx = LongWord(FCells.Count)
         then FCells.Add(TBFCell.New);
 end;
 
@@ -153,7 +183,7 @@ end;
 function TBFInput.Value: Byte;
 begin
      Inc(FIdx);
-     if FIdx > FInput.Length
+     if FIdx > LongWord(FInput.Length)
         then raise EInOutError.Create('Invalid operation: Input queue has no more data.');
      Result := Ord(FInput[FIdx]);
 end;
@@ -198,6 +228,130 @@ begin
                      bfLoopStop  : if Cell.Value <> 0
                                       then FSource.RestartLoop;
                 end;
+end;
+
+{ TBFCommandList }
+
+constructor TBFCommandList.Create(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String);
+begin
+     FCmdList := TStringList.Create;
+     with FCmdList do
+          begin
+               Add(sMoveLeft);
+               Add(sMoveRight);
+               Add(sAdd);
+               Add(sSub);
+               Add(sWrite);
+               Add(sRead);
+               Add(sLoopStart);
+               Add(sLoopStop);
+          end;
+     FTokenSize := sMoveLeft.Length;
+end;
+
+destructor TBFCommandList.Destroy;
+begin
+     FCmdList.Free;
+     inherited;
+end;
+
+function TBFCommandList.Item(Idx: Byte): TBFCommand;
+begin
+     Result := TBFCommand(Idx);
+end;
+
+function TBFCommandList.Item(Token: String): TBFCommand;
+begin
+     Result := TBFCommand(FCmdList.IndexOf(Token));
+end;
+
+class function TBFCommandList.New(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart,
+  sLoopStop: String): IBFCommandList;
+begin
+     Result := Create(sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop);
+end;
+
+function TBFCommandList.TokenSize: Byte;
+begin
+     Result := FTokenSize;
+end;
+
+{ TBFSource }
+
+function TBFSource.Cmd: TBFCommand;
+begin
+     Result := FCmdList.Item(Token(FIdx));
+     Inc(FIdx, FCmdList.TokenSize);
+end;
+
+constructor TBFSource.Create(CmdList: IBFCommandList; Source: String);
+begin
+     FCmdList := CmdList;
+     FSource  := StringReplace(Source, ' ', '', [rfReplaceAll]);
+     FIdx     := 1;
+end;
+
+function TBFSource.IsValid: Boolean;
+begin
+     Result := FIdx <= LongWord(FSource.Length);
+end;
+
+class function TBFSource.New(CmdList: IBFCommandList; Source: String): IBFSource;
+begin
+     Result := Create(CmdList, Source);
+end;
+
+function TBFSource.RestartLoop: IBFSource;
+var
+   i, Count, Pair: Integer;
+begin
+     Pair  := 0;
+     Count := 0;
+     i     := FIdx-(2 * FCmdList.TokenSize);
+     while i>=Low(FSource) do
+           begin
+                if FCmdList.Item(Token(i)) = bfLoopStop
+                   then Inc(Count);
+                if (FCmdList.Item(Token(i)) = bfLoopStart) and (Count = 0)
+                   then begin
+                             Pair := i;
+                             Break;
+                        end;
+                Dec(i, FCmdList.TokenSize);
+           end;
+     if Pair = -1
+        then raise EInvalidOperation.Create(Format('Invalid Operation: Loop at %d ends without starting.', [FIdx]));
+     FIdx := Pair + FCmdList.TokenSize;
+end;
+
+function TBFSource.SkipLoop: IBFSource;
+var
+   i, Count, Pair: Integer;
+begin
+     Pair  := 0;
+     Count := 0;
+     i     := FIdx + FCmdList.TokenSize;
+     while i <= High(FSource) do
+           begin
+                if FCmdList.Item(Token(i)) = bfLoopStart
+                   then Inc(Count);
+                if (FCmdList.Item(Token(i)) = bfLoopStop) and (Count = 0)
+                   then begin
+                             Pair := i;
+                             Break;
+                        end;
+                Inc(i, FCmdList.TokenSize);
+           end;
+     if Pair = 0
+        then raise EInvalidOperation.Create(Format('Invalid Operation: Loop at %d has no end.', [FIdx]));
+     FIdx := Pair + FCmdList.TokenSize;
+end;
+
+function TBFSource.Token(Idx: LongWord = 0): String;
+begin
+     if Idx = 0
+        then Idx := FIdx;
+     Result := Copy(FSource, Idx, FCmdList.TokenSize);
 end;
 
 end.
