@@ -10,7 +10,7 @@ uses
 
 type
     IBFProgram = Interface ['{56E9D1C7-756B-4C96-9F7F-A66FE2A5BE06}']
-      function Run(Input: String = ''): IBFProgram;
+      function Run(Input: IBFInput): IBFProgram;
       function Output: String;
     End;
 
@@ -30,7 +30,7 @@ type
       destructor Destroy; Override;
       class function New(Source: String): IBFProgram;
       class function NewFromFile(SourceFile: TFileName): IBFProgram;
-      function Run(Input: String = ''): IBFProgram;
+      function Run(Input: IBFInput): IBFProgram;
       function Output: String;
     End;
 
@@ -122,13 +122,10 @@ begin
      Result := FOutput;
 end;
 
-function TBFProgram.Run(Input: String = ''): IBFProgram;
-var
-   InputIndex: Word;
+function TBFProgram.Run(Input: IBFInput): IBFProgram;
 begin
      Result     := Self;
      FIndex     := 1;
-     InputIndex := 0;
      while FIndex <= Length(FSource) do
            with FOutputStack do
                 begin
@@ -138,12 +135,7 @@ begin
                           '+': Cell.Add;
                           '-': Cell.Sub;
                           '.': FOutput := FOutput + Chr(Cell.Value);
-                          ',': begin
-                                    Inc(InputIndex);
-                                    if InputIndex > Length(Input)
-                                       then raise EInOutError.Create('Invalid Operation: Missing input value');
-                                    Cell.Define(Ord(Input[InputIndex]));
-                               end;
+                          ',': Cell.Define(Input.Value);
                           '[': if not StartLoop
                                   then FIndex := FindLoopStop-1;
                           ']': if not StopLoop
