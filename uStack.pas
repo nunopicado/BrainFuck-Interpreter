@@ -10,8 +10,8 @@ type
     ICell = Interface ['{68191C4D-9539-4730-B4AB-3C423145376C}']
       function Add  : ICell;
       function Sub  : ICell;
-      function Value: Byte;
-      function Define(NewValue: Byte): ICell;
+      function Value: Word;
+      function Define(NewValue: Word): ICell;
     End;
 
     IStack = Interface ['{0149AEDA-BF0B-481C-9227-C8710CDC2AAF}']
@@ -22,13 +22,13 @@ type
 
     TCell = Class(TInterfacedObject, ICell)
     private
-      FCell: Byte;
+      FCell: Word;
     public
       class function New: ICell;
       function Add  : ICell;
       function Sub  : ICell;
-      function Value: Byte;
-      function Define(NewValue: Byte): ICell;
+      function Value: Word;
+      function Define(NewValue: Word): ICell;
     End;
 
     TStack = Class(TInterfacedObject, IStack)
@@ -57,7 +57,7 @@ begin
      Inc(FCell);
 end;
 
-function TCell.Define(NewValue: Byte): ICell;
+function TCell.Define(NewValue: Word): ICell;
 begin
      Result := Self;
      FCell  := NewValue;
@@ -74,7 +74,7 @@ begin
      Dec(FCell);
 end;
 
-function TCell.Value: Byte;
+function TCell.Value: Word;
 begin
      Result := FCell;
 end;
