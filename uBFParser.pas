@@ -118,6 +118,7 @@ end;
 function TBFProgram.Run: IBFProgram;
 begin
      FIndex := 1;
+     Result     := Self;
      while FIndex <= Length(FSource) do
            with FStack do
                 begin
