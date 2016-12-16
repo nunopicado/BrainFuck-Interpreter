@@ -8,19 +8,18 @@ uses
   ;
 
 type
-    TCell = Class(TInterfacedObject, IBFCell)
-    private
+    TBFCell = Class(TInterfacedObject, IBFCell)
+    strict private
       FCell : Byte;
     public
-      constructor Create(Value: Byte);
-      class function New(Value: Byte=0) : IBFCell;
-      function Add                      : IBFCell;
-      function Sub                      : IBFCell;
-      function Value                    : Byte;
-      function Define(NewValue: Byte)   : IBFCell;
+      class function New              : IBFCell;
+      function Add                    : IBFCell;
+      function Sub                    : IBFCell;
+      function Value                  : Byte;
+      function Define(NewValue: Byte) : IBFCell;
     End;
 
-    TStack = Class(TInterfacedObject, IBFStack)
+    TBFStack = Class(TInterfacedObject, IBFStack)
     private
       FCells : TList<IBFCell>;
       FIdx   : LongWord;
@@ -41,80 +40,77 @@ uses
 
 { TCell }
 
-function TCell.Add: IBFCell;
+function TBFCell.Add: IBFCell;
 begin
+     if FCell = High(Byte)
+        then raise EOverflow.Create('Invalid operation: Cell value is already in its upper limit.');
+
      Result := Self;
      Inc(FCell);
 end;
 
-constructor TCell.Create(Value: Byte);
-begin
-     FCell := Value;
-end;
-
-function TCell.Define(NewValue: Byte): IBFCell;
+function TBFCell.Define(NewValue: Byte): IBFCell;
 begin
      Result := Self;
      FCell  := NewValue;
 end;
 
-class function TCell.New(Value: Byte): IBFCell;
+class function TBFCell.New: IBFCell;
 begin
-     Result := Create(Value);
+     Result := Create;
 end;
 
-function TCell.Sub: IBFCell;
+function TBFCell.Sub: IBFCell;
 begin
+     if FCell = Low(Byte)
+        then raise EUnderflow.Create('Invalid operation: Cell value is already in its lower limit.');
+
      Result := Self;
      Dec(FCell);
 end;
 
-function TCell.Value: Byte;
+function TBFCell.Value: Byte;
 begin
      Result := FCell;
 end;
 
 { TStack }
 
-function TStack.Cell: IBFCell;
+function TBFStack.Cell: IBFCell;
 begin
      Result := FCells[FIdx];
 end;
 
-constructor TStack.Create;
+constructor TBFStack.Create;
 begin
      FCells := TList<IBFCell>.Create;
-     FCells.Add(
-                TCell.New
-               );
+     FCells.Add(TBFCell.New);
 end;
 
-destructor TStack.Destroy;
+destructor TBFStack.Destroy;
 begin
      FCells.Free;
      inherited;
 end;
 
-function TStack.MoveLeft: IBFStack;
+function TBFStack.MoveLeft: IBFStack;
 begin
      if FIdx = 0
-        then raise EInvalidOp.Create('Invalid Operation: Left when position = 0');
+        then raise EInvalidOp.Create('Invalid operation: Already in the leftmost position.');
 
      Result := Self;
      Dec(FIdx);
 end;
 
-function TStack.MoveRight: IBFStack;
+function TBFStack.MoveRight: IBFStack;
 begin
      Result := Self;
      Inc(FIdx);
      if FIdx = FCells.Count
-        then FCells.Add(
-                        TCell.New
-                       );
+        then FCells.Add(TBFCell.New);
 end;
 
-class function TStack.New: IBFStack;
+class function TBFStack.New: IBFStack;
 begin
      Result := Create;
 end;

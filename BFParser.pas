@@ -47,7 +47,7 @@ constructor TBFProgram.Create(Source: String);
 begin
      FLoops       := TList<LongWord>.Create;
      FSource      := Source;
-     FOutputStack := TStack.New;
+     FOutputStack := TBFStack.New;
 end;
 
 destructor TBFProgram.Destroy;
