@@ -20,7 +20,7 @@ type
     End;
 
     TBFStack = Class(TInterfacedObject, IBFStack)
-    private
+    strict private
       FCells : TList<IBFCell>;
       FIdx   : LongWord;
     public
@@ -42,13 +42,26 @@ type
       function Value: Byte;
     End;
 
+    TBFProgram = Class(TInterfacedObject, IBFProgram)
+    private
+      FSource: IBFSource;
+      FOutput: String;
+      FOutputStack: IBFStack;
+      procedure AddOutput(Value: Byte);
+    public
+      constructor Create(BFSource: IBFSource);
+      class function New(BFSource: IBFSource): IBFProgram;
+      function Run(Input: IBFInput): IBFProgram;
+      function Output: String;
+    End;
+
 implementation
 
 uses
     SysUtils
   ;
 
-{ TCell }
+{ TBFCell }
 
 function TBFCell.Add: IBFCell;
 begin
@@ -84,7 +97,7 @@ begin
      Result := FCell;
 end;
 
-{ TStack }
+{ TBFStack }
 
 function TBFStack.Cell: IBFCell;
 begin
@@ -143,6 +156,48 @@ begin
      if FIdx > FInput.Length
         then raise EInOutError.Create('Invalid operation: Input queue has no more data.');
      Result := Ord(FInput[FIdx]);
+end;
+
+{ TBFProgram }
+
+procedure TBFProgram.AddOutput(Value: Byte);
+begin
+     FOutput := FOutput + Chr(Value);
+end;
+
+constructor TBFProgram.Create(BFSource: IBFSource);
+begin
+     FSource      := BFSource;
+     FOutputStack := TBFStack.New;
+end;
+
+class function TBFProgram.New(BFSource: IBFSource): IBFProgram;
+begin
+     Result := Create(BFSource);
+end;
+
+function TBFProgram.Output: String;
+begin
+     Result := FOutput;
+end;
+
+function TBFProgram.Run(Input: IBFInput): IBFProgram;
+begin
+     Result := Self;
+     while FSource.IsValid do
+           with FOutputStack do
+                case FSource.Cmd of
+                     bfRight     : MoveRight;
+                     bfLeft      : MoveLeft;
+                     bfAdd       : Cell.Add;
+                     bfSub       : Cell.Sub;
+                     bfWrite     : AddOutput(Cell.Value);
+                     bfRead      : Cell.Define(Input.Value);
+                     bfLoopStart : if Cell.Value = 0
+                                      then FSource.SkipLoop;
+                     bfLoopStop  : if Cell.Value <> 0
+                                      then FSource.RestartLoop;
+                end;
 end;
 
 end.
