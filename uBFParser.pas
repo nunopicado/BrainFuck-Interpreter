@@ -37,7 +37,6 @@ implementation
 
 uses
     Classes
-  , Crt32
   ;
 
 { TBFProgram }
