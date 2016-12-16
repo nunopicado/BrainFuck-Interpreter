@@ -1,10 +1,10 @@
-unit uBFParser;
+unit BFParser;
 
 interface
 
 uses
     SysUtils
-  , uStack
+  , BFStackIntf
   , Generics.Collections
   ;
 
@@ -18,7 +18,7 @@ type
     private
       FSource: String;
       FOutput: String;
-      FStack: IStack;
+      FOutputStack: IBFStack;
       FLoops: TList<LongWord>;
       FIndex: LongWord;
       function StartLoop: Boolean;
@@ -27,6 +27,7 @@ type
       function FindLoopStop: Integer;
     public
       constructor Create(Source: String);
+      destructor Destroy; Override;
       class function New(Source: String): IBFProgram;
       class function NewFromFile(SourceFile: TFileName): IBFProgram;
       function Run(Input: String = ''): IBFProgram;
@@ -37,15 +38,22 @@ implementation
 
 uses
     Classes
+  , BFStackImpl
   ;
 
 { TBFProgram }
 
 constructor TBFProgram.Create(Source: String);
 begin
-     FLoops  := TList<LongWord>.Create;
-     FSource := Source;
-     FStack  := TStack.New;
+     FLoops       := TList<LongWord>.Create;
+     FSource      := Source;
+     FOutputStack := TStack.New;
+end;
+
+destructor TBFProgram.Destroy;
+begin
+     FLoops.Free;
+     inherited;
 end;
 
 function TBFProgram.FindLoopStart: Integer;
@@ -122,7 +130,7 @@ begin
      FIndex     := 1;
      InputIndex := 0;
      while FIndex <= Length(FSource) do
-           with FStack do
+           with FOutputStack do
                 begin
                      case FSource[FIndex] of
                           '>': MoveRight;
@@ -148,12 +156,12 @@ end;
 function TBFProgram.StartLoop: Boolean;
 begin
      FLoops.Add(FIndex);
-     Result := FStack.Cell.Value <> 0;
+     Result := FOutputStack.Cell.Value <> 0;
 end;
 
 function TBFProgram.StopLoop: Boolean;
 begin
-     Result := FStack.Cell.Value = 0;
+     Result := FOutputStack.Cell.Value = 0;
      if Result
         then FLoops.Delete(FLoops.Count-1);
 end;
