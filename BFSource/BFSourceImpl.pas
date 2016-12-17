@@ -45,7 +45,7 @@ end;
 constructor TBFSource.Create(CmdList: IBFCommandList; Source: String);
 begin
      FCmdList := CmdList;
-     FSource  := StringReplace(Source, ' ', '', [rfReplaceAll]);
+     FSource  := Source;
      FIdx     := 1;
 end;
 
@@ -71,7 +71,7 @@ class function TBFSource.NewOok(Source: String): IBFSource;
 begin
      Result := New(
                    TBFCommandList.New('Ook?Ook.', 'Ook.Ook?', 'Ook.Ook.', 'Ook!Ook!', 'Ook!Ook.', 'Ook.Ook!', 'Ook!Ook?', 'Ook?Ook!'),
-                   Source
+                   StringReplace(Source, ' ', '', [rfReplaceAll])
                   );
 end;
 
