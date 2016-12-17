@@ -14,7 +14,7 @@ type
       FSource  : String;
       FIdx     : Integer;
     strict private // Methods
-      function Token(Idx: Integer = 0): String;
+      function Token(Idx: Integer): String;
     public
       constructor Create(CmdList: IBFCommandList; Source: String);
       class function New(CmdList: IBFCommandList; Source: String): IBFSource;
@@ -121,10 +121,8 @@ begin
      FIdx := Pair + FCmdList.TokenSize;
 end;
 
-function TBFSource.Token(Idx: Integer = 0): String;
+function TBFSource.Token(Idx: Integer): String;
 begin
-     if Idx = 0
-        then Idx := FIdx;
      Result := Copy(FSource, Idx, FCmdList.TokenSize);
 end;
 
