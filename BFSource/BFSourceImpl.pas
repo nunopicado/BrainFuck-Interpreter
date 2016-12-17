@@ -12,9 +12,9 @@ type
     strict private // Fields
       FCmdList : IBFCommandList;
       FSource  : String;
-      FIdx     : LongWord;
+      FIdx     : Integer;
     strict private // Methods
-      function Token(Idx: LongWord = 0): String;
+      function Token(Idx: Integer = 0): String;
     public
       constructor Create(CmdList: IBFCommandList; Source: String);
       class function New(CmdList: IBFCommandList; Source: String): IBFSource;
@@ -51,7 +51,7 @@ end;
 
 function TBFSource.IsValid: Boolean;
 begin
-     Result := FIdx <= LongWord(FSource.Length);
+     Result := FIdx <= FSource.Length;
 end;
 
 class function TBFSource.New(CmdList: IBFCommandList; Source: String): IBFSource;
@@ -121,7 +121,7 @@ begin
      FIdx := Pair + FCmdList.TokenSize;
 end;
 
-function TBFSource.Token(Idx: LongWord = 0): String;
+function TBFSource.Token(Idx: Integer = 0): String;
 begin
      if Idx = 0
         then Idx := FIdx;

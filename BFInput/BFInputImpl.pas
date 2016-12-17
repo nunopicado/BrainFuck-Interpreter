@@ -44,7 +44,7 @@ end;
 function TBFInput.Value: Byte;
 begin
      Inc(FIdx);
-     if FIdx > LongWord(FInput.Length)
+     if FIdx > FInput.Length
         then raise EInOutError.Create('Invalid operation: Input queue has no more data.');
      Result := Ord(FInput[FIdx]);
 end;

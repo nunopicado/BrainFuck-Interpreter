@@ -22,7 +22,7 @@ type
     TBFStack = Class(TInterfacedObject, IBFStack)
     strict private
       FCells : TList<IBFCell>;
-      FIdx   : LongWord;
+      FIdx   : Integer;
     public
       constructor Create;
       destructor Destroy; Override;
@@ -106,7 +106,7 @@ function TBFStack.MoveRight: IBFStack;
 begin
      Result := Self;
      Inc(FIdx);
-     if FIdx = LongWord(FCells.Count)
+     if FIdx = FCells.Count
         then FCells.Add(TBFCell.New);
 end;
 
