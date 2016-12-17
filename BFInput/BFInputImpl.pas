@@ -10,11 +10,12 @@ type
     TBFInput = Class(TInterfacedObject, IBFInput)
     strict private
       FInput: String;
-      FIdx: LongWord;
+      FIdx: Integer;
     public
       constructor Create(InputChain: String);
       class function New(InputChain: String): IBFInput;
       function Value: Byte;
+      function Count: Integer;
     End;
 
 implementation
@@ -24,6 +25,11 @@ uses
   ;
 
 { TBFInput }
+
+function TBFInput.Count: Integer;
+begin
+     Result := FInput.Length;
+end;
 
 constructor TBFInput.Create(InputChain: String);
 begin
