@@ -39,7 +39,9 @@ uses
 function TBFSource.Cmd: TBFCommandSet;
 begin
      Result := FCmdList.Item(Token(FIdx));
-     Inc(FIdx, FCmdList.TokenSize);
+     if Result = bfInvalid
+        then Delete(FSource, FIdx, 1)
+        else Inc(FIdx, FCmdList.TokenSize);
 end;
 
 constructor TBFSource.Create(CmdList: IBFCommandList; Source: String);
