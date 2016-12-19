@@ -17,8 +17,8 @@ type
       FOutputStack: IBFStack;
       procedure AddOutput(Value: Byte);
     public
-      constructor Create(BFSource: IBFSource);
-      class function New(BFSource: IBFSource): IBFInterpreter;
+      constructor Create(BFSource: IBFSource; BFOutput: IBFStack);
+      class function New(BFSource: IBFSource; BFOutput: IBFStack): IBFInterpreter;
       function Run(Input: IBFInput): IBFInterpreter;
       function Output: String;
     End;
@@ -26,8 +26,7 @@ type
 implementation
 
 uses
-    BFOutputImpl
-  , BFCommandsIntf
+    BFCommandsIntf
   ;
 
 { TBFInterpreter }
@@ -37,15 +36,15 @@ begin
      FOutput := FOutput + Chr(Value);
 end;
 
-constructor TBFInterpreter.Create(BFSource: IBFSource);
+constructor TBFInterpreter.Create(BFSource: IBFSource; BFOutput: IBFStack);
 begin
      FSource      := BFSource;
-     FOutputStack := TBFStack.New;
+     FOutputStack := BFOutput;
 end;
 
-class function TBFInterpreter.New(BFSource: IBFSource): IBFInterpreter;
+class function TBFInterpreter.New(BFSource: IBFSource; BFOutput: IBFStack): IBFInterpreter;
 begin
-     Result := Create(BFSource);
+     Result := Create(BFSource, BFOutput);
 end;
 
 function TBFInterpreter.Output: String;
