@@ -88,11 +88,13 @@ begin
            begin
                 if FCmdList.Item(Token(i)) = bfLoopStop
                    then Inc(Count);
-                if (FCmdList.Item(Token(i)) = bfLoopStart) and (Count = 0)
-                   then begin
-                             Pair := i;
-                             Break;
-                        end;
+                if (FCmdList.Item(Token(i)) = bfLoopStart)
+                   then if Count = 0
+                           then begin
+                                     Pair := i;
+                                     Break;
+                                end
+                           else Dec(Count);
                 Dec(i, FCmdList.TokenSize);
            end;
      if Pair = -1
@@ -111,11 +113,13 @@ begin
            begin
                 if FCmdList.Item(Token(i)) = bfLoopStart
                    then Inc(Count);
-                if (FCmdList.Item(Token(i)) = bfLoopStop) and (Count = 0)
-                   then begin
-                             Pair := i;
-                             Break;
-                        end;
+                if (FCmdList.Item(Token(i)) = bfLoopStop)
+                   then if Count = 0
+                           then begin
+                                     Pair := i;
+                                     Break;
+                                end
+                           else Dec(Count);
                 Inc(i, FCmdList.TokenSize);
            end;
      if Pair = 0
