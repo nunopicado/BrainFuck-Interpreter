@@ -108,7 +108,7 @@ var
 begin
      Pair  := 0;
      Count := 0;
-     i     := FIdx + FCmdList.TokenSize;
+     i     := FIdx;
      while i <= High(FSource) do
            begin
                 if FCmdList.Item(Token(i)) = bfLoopStart
