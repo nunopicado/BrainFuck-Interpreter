@@ -21,6 +21,7 @@ type
       class function NewBrainFuck(Source: String): IBFSource;
       class function NewOok(Source: String): IBFSource;
       class function NewMorseFuck(Source: String): IBFSource;
+      class function NewBitFuck(Source: String): IBFSource;
       function Cmd: TBFCommandSet;
       function IsValid: Boolean;
       function SkipLoop: IBFSource;
@@ -62,6 +63,14 @@ end;
 class function TBFSource.New(CmdList: IBFCommandList; Source: String): IBFSource;
 begin
      Result := Create(CmdList, Source);
+end;
+
+class function TBFSource.NewBitFuck(Source: String): IBFSource;
+begin
+     Result := New(
+                   TBFCommandList.New('000', '001', '010', '011', '100', '101', '110', '111'),
+                   Source
+                  );
 end;
 
 class function TBFSource.NewBrainFuck(Source: String): IBFSource;
