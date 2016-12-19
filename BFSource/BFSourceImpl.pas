@@ -20,6 +20,7 @@ type
       class function New(CmdList: IBFCommandList; Source: String): IBFSource;
       class function NewBrainFuck(Source: String): IBFSource;
       class function NewOok(Source: String): IBFSource;
+      class function NewMorseFuck(Source: String): IBFSource;
       function Cmd: TBFCommandSet;
       function IsValid: Boolean;
       function SkipLoop: IBFSource;
@@ -67,6 +68,14 @@ class function TBFSource.NewBrainFuck(Source: String): IBFSource;
 begin
      Result := New(
                    TBFCommandList.New('<', '>', '+', '-', '.', ',', '[', ']' ),
+                   Source
+                  );
+end;
+
+class function TBFSource.NewMorseFuck(Source: String): IBFSource;
+begin
+     Result := New(
+                   TBFCommandList.New('--.', '.--', '..-', '-..', '-.-', '.-.', '---', '...'),
                    Source
                   );
 end;
