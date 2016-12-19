@@ -42,9 +42,6 @@ uses
 
 function TBFCell.Add: IBFCell;
 begin
-     if FCell = High(Byte)
-        then raise EOverflow.Create('Invalid operation: Cell value is already in its upper limit.');
-
      Result := Self;
      Inc(FCell);
 end;
@@ -62,9 +59,6 @@ end;
 
 function TBFCell.Sub: IBFCell;
 begin
-     if FCell = Low(Byte)
-        then raise EUnderflow.Create('Invalid operation: Cell value is already in its lower limit.');
-
      Result := Self;
      Dec(FCell);
 end;
