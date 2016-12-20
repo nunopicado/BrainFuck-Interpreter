@@ -9,13 +9,13 @@ uses
 type
     TBFInput = Class(TInterfacedObject, IBFInput)
     strict private
-      FInput: String;
-      FIdx: Integer;
+      FInput : String;
+      FIdx   : Integer;
     public
       constructor Create(InputChain: String);
       class function New(InputChain: String): IBFInput;
-      function Value: Byte;
-      function Count: Integer;
+      function Value : Byte;
+      function Count : Integer;
     End;
 
 implementation
