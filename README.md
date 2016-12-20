@@ -20,6 +20,7 @@ The idea behind this project **is not** to be the best or more efficient *BrainF
 * IBFInput - Represents the input string, which holds the characters the source code will try to read
 * IBFStack - Represent the list of cells where the source code logic is applied
 * IBFCell - Represents a single cell in the stack
+* IBFCellFactory - Represent a factory IBFStack implementers use to instantiate IBFCells
 * IBFSource - Represents the source code
 
 
