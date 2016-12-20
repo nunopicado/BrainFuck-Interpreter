@@ -19,14 +19,21 @@ type
       function Define(NewValue: Byte) : IBFCell;
     End;
 
+    TBFCellFactory = Class(TInterfacedObject, IBFCellFactory)
+    public
+      class function New: IBFCellFactory;
+      function NewCell: IBFCell;
+    End;
+
     TBFStack = Class(TInterfacedObject, IBFStack)
     strict private
-      FCells : TList<IBFCell>;
-      FIdx   : Integer;
+      FCellFactory : IBFCellFactory;
+      FCells       : TList<IBFCell>;
+      FIdx         : Integer;
     public
-      constructor Create;
+      constructor Create(CellFactory: IBFCellFactory);
       destructor Destroy; Override;
-      class function New : IBFStack;
+      class function New(CellFactory: IBFCellFactory) : IBFStack;
       function Cell      : IBFCell;
       function MoveLeft  : IBFStack;
       function MoveRight : IBFStack;
@@ -85,10 +92,11 @@ begin
      Result := FCells[FIdx];
 end;
 
-constructor TBFStack.Create;
+constructor TBFStack.Create(CellFactory: IBFCellFactory);
 begin
-     FCells := TList<IBFCell>.Create;
-     FCells.Add(TBFCell.New);
+     FCells       := TList<IBFCell>.Create;
+     FCellFactory := CellFactory;
+     FCells.Add(FCellFactory.NewCell);
 end;
 
 destructor TBFStack.Destroy;
@@ -111,12 +119,24 @@ begin
      Result := Self;
      Inc(FIdx);
      if FIdx = FCells.Count
-        then FCells.Add(TBFCell.New);
+        then FCells.Add(FCellFactory.NewCell);
 end;
 
-class function TBFStack.New: IBFStack;
+class function TBFStack.New(CellFactory: IBFCellFactory): IBFStack;
+begin
+     Result := Create(CellFactory);
+end;
+
+{ TBFCellFactory }
+
+class function TBFCellFactory.New: IBFCellFactory;
 begin
      Result := Create;
+end;
+
+function TBFCellFactory.NewCell: IBFCell;
+begin
+     Result := TBFCell.New;
 end;
 
 end.
