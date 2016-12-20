@@ -16,9 +16,9 @@ type
       constructor Create(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String);
       destructor Destroy; Override;
       class function New(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String): IBFCommandList;
-      function TokenSize: Byte;
-      function Item(Idx: Byte): TBFCommandSet; Overload;
-      function Item(Token: String): TBFCommandSet; Overload;
+      function TokenSize           : Byte;
+      function Item(Idx: Byte)     : TBFCommandSet; Overload;
+      function Item(Token: String) : TBFCommandSet; Overload;
     End;
 
 implementation
