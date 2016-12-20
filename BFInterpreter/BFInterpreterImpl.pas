@@ -12,14 +12,13 @@ uses
 type
     TBFInterpreter = Class(TInterfacedObject, IBFInterpreter)
     private
-      FSource    : IBFSource;
-      FOutputStr : String;
-      FOutput    : IBFStack;
-      FInput     : IBFInput;
-      procedure AddOutput(Value: Byte);
+      FSource : IBFSource;
+      FOutput : String;
+      FStack  : IBFStack;
+      FInput  : IBFInput;
     public
-      constructor Create(BFSource: IBFSource; BFOutput: IBFStack; BFInput: IBFInput = nil);
-      class function New(BFSource: IBFSource; BFOutput: IBFStack; BFInput: IBFInput = nil): IBFInterpreter;
+      constructor Create(BFSource: IBFSource; BFStack: IBFStack; BFInput: IBFInput = nil);
+      class function New(BFSource: IBFSource; BFStack: IBFStack; BFInput: IBFInput = nil): IBFInterpreter;
       function Run      : IBFInterpreter;
       function AsString : String;
     End;
@@ -32,39 +31,34 @@ uses
 
 { TBFInterpreter }
 
-procedure TBFInterpreter.AddOutput(Value: Byte);
-begin
-     FOutputStr := FOutputStr + Chr(Value);
-end;
-
-constructor TBFInterpreter.Create(BFSource: IBFSource; BFOutput: IBFStack; BFInput: IBFInput = nil);
+constructor TBFInterpreter.Create(BFSource: IBFSource; BFStack: IBFStack; BFInput: IBFInput = nil);
 begin
      FSource := BFSource;
-     FOutput := BFOutput;
+     FStack  := BFStack;
      FInput  := BFInput;
 end;
 
-class function TBFInterpreter.New(BFSource: IBFSource; BFOutput: IBFStack; BFInput: IBFInput = nil): IBFInterpreter;
+class function TBFInterpreter.New(BFSource: IBFSource; BFStack: IBFStack; BFInput: IBFInput = nil): IBFInterpreter;
 begin
-     Result := Create(BFSource, BFOutput, BFInput);
+     Result := Create(BFSource, BFStack, BFInput);
 end;
 
 function TBFInterpreter.AsString: String;
 begin
-     Result := FOutputStr;
+     Result := FOutput;
 end;
 
 function TBFInterpreter.Run: IBFInterpreter;
 begin
      Result := Self;
      while FSource.IsValid do
-           with FOutput do
+           with FStack do
                 case FSource.Cmd of
                      bfRight     : MoveRight;
                      bfLeft      : MoveLeft;
                      bfAdd       : Cell.Add;
                      bfSub       : Cell.Sub;
-                     bfWrite     : AddOutput(Cell.Value);
+                     bfWrite     : FOutput := FOutput + Chr(Cell.Value);
                      bfRead      : Cell.Define(FInput.Value);
                      bfLoopStart : if Cell.Value = 0
                                       then FSource.SkipLoop;
