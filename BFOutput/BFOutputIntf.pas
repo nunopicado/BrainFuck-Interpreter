@@ -14,6 +14,7 @@ type
       function Cell      : IBFCell;
       function MoveLeft  : IBFStack;
       function MoveRight : IBFStack;
+      function AsString  : String;
     End;
 
 implementation

@@ -30,6 +30,7 @@ type
       function Cell      : IBFCell;
       function MoveLeft  : IBFStack;
       function MoveRight : IBFStack;
+      function AsString  : String;
     End;
 
 implementation
@@ -69,6 +70,15 @@ begin
 end;
 
 { TBFStack }
+
+function TBFStack.AsString: String;
+var
+   Cell: IBFCell;
+begin
+     Result := '';
+     for Cell in FCells do
+         Result := Result + Chr(Cell.Value);
+end;
 
 function TBFStack.Cell: IBFCell;
 begin
