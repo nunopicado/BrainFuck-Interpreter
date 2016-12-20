@@ -7,11 +7,11 @@ uses
   ;
 
 type
-    IBFSource = Interface ['{FF053E57-BB4D-4F22-BA67-C4092F4C93A8}']
-      function Cmd: TBFCommandSet;
+    ISource = Interface ['{FF053E57-BB4D-4F22-BA67-C4092F4C93A8}']
+      function Cmd: TCommandSet;
       function IsValid: Boolean;
-      function SkipLoop: IBFSource;
-      function RestartLoop: IBFSource;
+      function SkipLoop: ISource;
+      function RestartLoop: ISource;
     End;
 
 implementation

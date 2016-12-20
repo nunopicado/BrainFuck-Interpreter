@@ -8,24 +8,24 @@ uses
   ;
 
 type
-    TBFSource = Class(TInterfacedObject, IBFSource)
+    TSource = Class(TInterfacedObject, ISource)
     strict private // Fields
-      FCmdList : IBFCommandList;
+      FCmdList : ICommandList;
       FSource  : String;
       FIdx     : Integer;
     strict private // Methods
       function Token(Idx: Integer): String;
     public
-      constructor Create(CmdList: IBFCommandList; Source: String);
-      class function New(CmdList: IBFCommandList; Source: String): IBFSource;
-      class function NewBrainFuck(Source: String): IBFSource;
-      class function NewOok(Source: String): IBFSource;
-      class function NewMorseFuck(Source: String): IBFSource;
-      class function NewBitFuck(Source: String): IBFSource;
-      function Cmd: TBFCommandSet;
+      constructor Create(CmdList: ICommandList; Source: String);
+      class function New(CmdList: ICommandList; Source: String): ISource;
+      class function NewBrainFuck(Source: String): ISource;
+      class function NewOok(Source: String): ISource;
+      class function NewMorseFuck(Source: String): ISource;
+      class function NewBitFuck(Source: String): ISource;
+      function Cmd: TCommandSet;
       function IsValid: Boolean;
-      function SkipLoop: IBFSource;
-      function RestartLoop: IBFSource;
+      function SkipLoop: ISource;
+      function RestartLoop: ISource;
     End;
 
 implementation
@@ -38,7 +38,7 @@ uses
 
 { TBFSource }
 
-function TBFSource.Cmd: TBFCommandSet;
+function TSource.Cmd: TCommandSet;
 begin
      Repeat
            Result := FCmdList.Item(Token(FIdx));
@@ -48,56 +48,56 @@ begin
      Inc(FIdx, FCmdList.TokenSize);
 end;
 
-constructor TBFSource.Create(CmdList: IBFCommandList; Source: String);
+constructor TSource.Create(CmdList: ICommandList; Source: String);
 begin
      FCmdList := CmdList;
      FSource  := Source;
      FIdx     := 1;
 end;
 
-function TBFSource.IsValid: Boolean;
+function TSource.IsValid: Boolean;
 begin
      Result := FIdx <= FSource.Length;
 end;
 
-class function TBFSource.New(CmdList: IBFCommandList; Source: String): IBFSource;
+class function TSource.New(CmdList: ICommandList; Source: String): ISource;
 begin
      Result := Create(CmdList, Source);
 end;
 
-class function TBFSource.NewBitFuck(Source: String): IBFSource;
+class function TSource.NewBitFuck(Source: String): ISource;
 begin
      Result := New(
-                   TBFCommandList.New('000', '001', '010', '011', '100', '101', '110', '111'),
+                   TCommandList.New('000', '001', '010', '011', '100', '101', '110', '111'),
                    Source
                   );
 end;
 
-class function TBFSource.NewBrainFuck(Source: String): IBFSource;
+class function TSource.NewBrainFuck(Source: String): ISource;
 begin
      Result := New(
-                   TBFCommandList.New('<', '>', '+', '-', '.', ',', '[', ']' ),
+                   TCommandList.New('<', '>', '+', '-', '.', ',', '[', ']' ),
                    Source
                   );
 end;
 
-class function TBFSource.NewMorseFuck(Source: String): IBFSource;
+class function TSource.NewMorseFuck(Source: String): ISource;
 begin
      Result := New(
-                   TBFCommandList.New('--.', '.--', '..-', '-..', '-.-', '.-.', '---', '...'),
+                   TCommandList.New('--.', '.--', '..-', '-..', '-.-', '.-.', '---', '...'),
                    Source
                   );
 end;
 
-class function TBFSource.NewOok(Source: String): IBFSource;
+class function TSource.NewOok(Source: String): ISource;
 begin
      Result := New(
-                   TBFCommandList.New('Ook?Ook.', 'Ook.Ook?', 'Ook.Ook.', 'Ook!Ook!', 'Ook!Ook.', 'Ook.Ook!', 'Ook!Ook?', 'Ook?Ook!'),
+                   TCommandList.New('Ook?Ook.', 'Ook.Ook?', 'Ook.Ook.', 'Ook!Ook!', 'Ook!Ook.', 'Ook.Ook!', 'Ook!Ook?', 'Ook?Ook!'),
                    StringReplace(Source, ' ', '', [rfReplaceAll])
                   );
 end;
 
-function TBFSource.RestartLoop: IBFSource;
+function TSource.RestartLoop: ISource;
 var
    i, Count, Pair: Integer;
 begin
@@ -122,7 +122,7 @@ begin
      FIdx := Pair + FCmdList.TokenSize;
 end;
 
-function TBFSource.SkipLoop: IBFSource;
+function TSource.SkipLoop: ISource;
 var
    i, Count, Pair: Integer;
 begin
@@ -147,7 +147,7 @@ begin
      FIdx := Pair + FCmdList.TokenSize;
 end;
 
-function TBFSource.Token(Idx: Integer): String;
+function TSource.Token(Idx: Integer): String;
 begin
      Result := Copy(FSource, Idx, FCmdList.TokenSize);
 end;

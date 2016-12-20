@@ -8,17 +8,17 @@ uses
   ;
 
 type
-    TBFCommandList = Class(TInterfacedObject, IBFCommandList)
+    TCommandList = Class(TInterfacedObject, ICommandList)
     strict private
       FCmdList   : TStringList;
       FTokenSize : Byte;
     public
       constructor Create(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String);
       destructor Destroy; Override;
-      class function New(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String): IBFCommandList;
+      class function New(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String): ICommandList;
       function TokenSize           : Byte;
-      function Item(Idx: Byte)     : TBFCommandSet; Overload;
-      function Item(Token: String) : TBFCommandSet; Overload;
+      function Item(Idx: Byte)     : TCommandSet; Overload;
+      function Item(Token: String) : TCommandSet; Overload;
     End;
 
 implementation
@@ -29,7 +29,7 @@ uses
 
 { TBFCommandList }
 
-constructor TBFCommandList.Create(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String);
+constructor TCommandList.Create(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String);
 begin
      FCmdList := TStringList.Create;
      with FCmdList do
@@ -46,29 +46,29 @@ begin
      FTokenSize := sMoveLeft.Length;
 end;
 
-destructor TBFCommandList.Destroy;
+destructor TCommandList.Destroy;
 begin
      FCmdList.Free;
      inherited;
 end;
 
-function TBFCommandList.Item(Idx: Byte): TBFCommandSet;
+function TCommandList.Item(Idx: Byte): TCommandSet;
 begin
-     Result := TBFCommandSet(Idx);
+     Result := TCommandSet(Idx);
 end;
 
-function TBFCommandList.Item(Token: String): TBFCommandSet;
+function TCommandList.Item(Token: String): TCommandSet;
 begin
-     Result := TBFCommandSet(FCmdList.IndexOf(Token));
+     Result := TCommandSet(FCmdList.IndexOf(Token));
 end;
 
-class function TBFCommandList.New(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart,
-  sLoopStop: String): IBFCommandList;
+class function TCommandList.New(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart,
+  sLoopStop: String): ICommandList;
 begin
      Result := Create(sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop);
 end;
 
-function TBFCommandList.TokenSize: Byte;
+function TCommandList.TokenSize: Byte;
 begin
      Result := FTokenSize;
 end;

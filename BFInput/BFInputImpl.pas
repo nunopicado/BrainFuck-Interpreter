@@ -7,13 +7,13 @@ uses
   ;
 
 type
-    TBFInput = Class(TInterfacedObject, IBFInput)
+    TInput = Class(TInterfacedObject, IInput)
     strict private
       FInput : String;
       FIdx   : Integer;
     public
       constructor Create(InputChain: String);
-      class function New(InputChain: String): IBFInput;
+      class function New(InputChain: String): IInput;
       function Value : Byte;
       function Count : Integer;
     End;
@@ -26,22 +26,22 @@ uses
 
 { TBFInput }
 
-function TBFInput.Count: Integer;
+function TInput.Count: Integer;
 begin
      Result := FInput.Length;
 end;
 
-constructor TBFInput.Create(InputChain: String);
+constructor TInput.Create(InputChain: String);
 begin
      FInput := InputChain;
 end;
 
-class function TBFInput.New(InputChain: String): IBFInput;
+class function TInput.New(InputChain: String): IInput;
 begin
      Result := Create(InputChain);
 end;
 
-function TBFInput.Value: Byte;
+function TInput.Value: Byte;
 begin
      Inc(FIdx);
      if FIdx > FInput.Length

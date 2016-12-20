@@ -5,21 +5,21 @@ interface
 uses
     BFInterpreterIntf
   , BFSourceIntf
-  , BFOutputIntf
+  , BFTapeIntf
   , BFInputIntf
   ;
 
 type
-    TBFInterpreter = Class(TInterfacedObject, IBFInterpreter)
+    TInterpreter = Class(TInterfacedObject, IInterpreter)
     private
-      FSource : IBFSource;
+      FSource : ISource;
       FOutput : String;
-      FStack  : IBFStack;
-      FInput  : IBFInput;
+      FStack  : ITape;
+      FInput  : IInput;
     public
-      constructor Create(BFSource: IBFSource; BFStack: IBFStack; BFInput: IBFInput = nil);
-      class function New(BFSource: IBFSource; BFStack: IBFStack; BFInput: IBFInput = nil): IBFInterpreter;
-      function Run      : IBFInterpreter;
+      constructor Create(Source: ISource; Tape: ITape; Input: IInput = nil);
+      class function New(Source: ISource; Tape: ITape; Input: IInput = nil): IInterpreter;
+      function Run      : IInterpreter;
       function AsString : String;
     End;
 
@@ -31,24 +31,24 @@ uses
 
 { TBFInterpreter }
 
-constructor TBFInterpreter.Create(BFSource: IBFSource; BFStack: IBFStack; BFInput: IBFInput = nil);
+constructor TInterpreter.Create(Source: ISource; Tape: ITape; Input: IInput = nil);
 begin
-     FSource := BFSource;
-     FStack  := BFStack;
-     FInput  := BFInput;
+     FSource := Source;
+     FStack  := Tape;
+     FInput  := Input;
 end;
 
-class function TBFInterpreter.New(BFSource: IBFSource; BFStack: IBFStack; BFInput: IBFInput = nil): IBFInterpreter;
+class function TInterpreter.New(Source: ISource; Tape: ITape; Input: IInput = nil): IInterpreter;
 begin
-     Result := Create(BFSource, BFStack, BFInput);
+     Result := Create(Source, Tape, Input);
 end;
 
-function TBFInterpreter.AsString: String;
+function TInterpreter.AsString: String;
 begin
      Result := FOutput;
 end;
 
-function TBFInterpreter.Run: IBFInterpreter;
+function TInterpreter.Run: IInterpreter;
 begin
      Result := Self;
      while FSource.IsValid do
