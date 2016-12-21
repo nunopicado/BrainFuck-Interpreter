@@ -27,7 +27,7 @@ uses
     SysUtils
   ;
 
-{ TBFCommandList }
+{ TCommandList }
 
 constructor TCommandList.Create(const sMoveLeft, sMoveRight, sAdd, sSub, sWrite, sRead, sLoopStart, sLoopStop: String);
 begin

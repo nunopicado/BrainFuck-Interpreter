@@ -14,7 +14,7 @@ type
     private
       FSource : ISource;
       FOutput : String;
-      FTape  : ITape;
+      FTape   : ITape;
       FInput  : IInput;
     public
       constructor Create(Source: ISource; Tape: ITape; Input: IInput = nil);
@@ -29,7 +29,7 @@ uses
     BFCommandsIntf
   ;
 
-{ TBFInterpreter }
+{ TInterpreter }
 
 constructor TInterpreter.Create(Source: ISource; Tape: ITape; Input: IInput = nil);
 begin
