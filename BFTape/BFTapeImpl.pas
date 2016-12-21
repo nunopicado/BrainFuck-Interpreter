@@ -12,11 +12,11 @@ type
     strict private
       FCell : Byte;
     public
-      class function New              : ITapeCell;
-      function Add                    : ITapeCell;
-      function Sub                    : ITapeCell;
-      function Value                  : Byte;
-      function Define(NewValue: Byte) : ITapeCell;
+      class function New           : ITapeCell;
+      function Add                 : ITapeCell;
+      function Sub                 : ITapeCell;
+      function Value               : Byte;
+      function Define(Value: Byte) : ITapeCell;
     End;
 
     TTapeCellFactory = Reference to Function: ITapeCell;
@@ -41,7 +41,7 @@ uses
     SysUtils
   ;
 
-{ TBFCell }
+{ TTapeCell }
 
 function TTapeCell.Add: ITapeCell;
 begin
@@ -49,10 +49,10 @@ begin
      Inc(FCell);
 end;
 
-function TTapeCell.Define(NewValue: Byte): ITapeCell;
+function TTapeCell.Define(Value: Byte): ITapeCell;
 begin
      Result := Self;
-     FCell  := NewValue;
+     FCell  := Value;
 end;
 
 class function TTapeCell.New: ITapeCell;
@@ -70,6 +70,7 @@ function TTapeCell.Value: Byte;
 begin
      Result := FCell;
 end;
+
 
 { TTape }
 
@@ -104,7 +105,6 @@ function TTape.MoveLeft: ITape;
 begin
      if FIdx = 0
         then raise EInvalidOp.Create('Invalid operation: Already in the leftmost position.');
-
      Result := Self;
      Dec(FIdx);
 end;
