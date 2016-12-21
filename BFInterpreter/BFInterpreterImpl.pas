@@ -14,7 +14,7 @@ type
     private
       FSource : ISource;
       FOutput : String;
-      FStack  : ITape;
+      FTape  : ITape;
       FInput  : IInput;
     public
       constructor Create(Source: ISource; Tape: ITape; Input: IInput = nil);
@@ -34,7 +34,7 @@ uses
 constructor TInterpreter.Create(Source: ISource; Tape: ITape; Input: IInput = nil);
 begin
      FSource := Source;
-     FStack  := Tape;
+     FTape   := Tape;
      FInput  := Input;
 end;
 
@@ -52,7 +52,7 @@ function TInterpreter.Run: IInterpreter;
 begin
      Result := Self;
      while FSource.IsValid do
-           with FStack do
+           with FTape do
                 case FSource.Cmd of
                      bfRight     : MoveRight;
                      bfLeft      : MoveLeft;
