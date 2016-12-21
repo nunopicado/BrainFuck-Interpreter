@@ -19,21 +19,16 @@ type
       function Define(NewValue: Byte) : ITapeCell;
     End;
 
-    TTapeCellFactory = Class(TInterfacedObject, ITapeCellFactory)
-    public
-      class function New : ITapeCellFactory;
-      function NewCell   : ITapeCell;
-    End;
-
+    TTapeCellFactory = Reference to Function: ITapeCell;
     TTape = Class(TInterfacedObject, ITape)
     strict private
-      FCellFactory : ITapeCellFactory;
+      FCellFactory : TTapeCellFactory;
       FCells       : TList<ITapeCell>;
       FIdx         : Integer;
     public
-      constructor Create(CellFactory: ITapeCellFactory);
+      constructor Create(CellFactory: TTapeCellFactory);
       destructor Destroy; Override;
-      class function New(CellFactory: ITapeCellFactory) : ITape;
+      class function New(CellFactory: TTapeCellFactory): ITape;
       function Cell      : ITapeCell;
       function MoveLeft  : ITape;
       function MoveRight : ITape;
@@ -76,7 +71,7 @@ begin
      Result := FCell;
 end;
 
-{ TBFStack }
+{ TTape }
 
 function TTape.AsString: String;
 var
@@ -92,11 +87,11 @@ begin
      Result := FCells[FIdx];
 end;
 
-constructor TTape.Create(CellFactory: ITapeCellFactory);
+constructor TTape.Create(CellFactory: TTapeCellFactory);
 begin
      FCells       := TList<ITapeCell>.Create;
      FCellFactory := CellFactory;
-     FCells.Add(FCellFactory.NewCell);
+     FCells.Add(FCellFactory);
 end;
 
 destructor TTape.Destroy;
@@ -119,24 +114,12 @@ begin
      Result := Self;
      Inc(FIdx);
      if FIdx = FCells.Count
-        then FCells.Add(FCellFactory.NewCell);
+        then FCells.Add(FCellFactory);
 end;
 
-class function TTape.New(CellFactory: ITapeCellFactory): ITape;
+class function TTape.New(CellFactory: TTapeCellFactory): ITape;
 begin
      Result := Create(CellFactory);
-end;
-
-{ TBFCellFactory }
-
-class function TTapeCellFactory.New: ITapeCellFactory;
-begin
-     Result := Create;
-end;
-
-function TTapeCellFactory.NewCell: ITapeCell;
-begin
-     Result := TTapeCell.New;
 end;
 
 end.

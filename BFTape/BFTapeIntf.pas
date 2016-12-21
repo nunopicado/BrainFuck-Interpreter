@@ -10,10 +10,6 @@ type
       function Define(NewValue: Byte) : ITapeCell;
     End;
 
-    ITapeCellFactory = Interface ['{4252A8BE-BEE4-401D-BBD0-A10C8F40A251}']
-      function NewCell: ITapeCell;
-    End;
-
     ITape = Interface ['{0149AEDA-BF0B-481C-9227-C8710CDC2AAF}']
       function Cell      : ITapeCell;
       function MoveLeft  : ITape;
