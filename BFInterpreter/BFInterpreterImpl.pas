@@ -53,7 +53,7 @@ begin
      Result := Self;
      while FSource.IsValid do
            with FTape do
-                case FSource.Cmd of
+                case FSource.Command of
                      bfRight     : MoveRight;
                      bfLeft      : MoveLeft;
                      bfAdd       : Cell.Add;

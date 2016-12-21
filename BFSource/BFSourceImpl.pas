@@ -22,7 +22,7 @@ type
       class function NewOok(Source: String): ISource;
       class function NewMorseFuck(Source: String): ISource;
       class function NewBitFuck(Source: String): ISource;
-      function Cmd: TCommandSet;
+      function Command: TCommandSet;
       function IsValid: Boolean;
       function SkipLoop: ISource;
       function RestartLoop: ISource;
@@ -38,7 +38,7 @@ uses
 
 { TBFSource }
 
-function TSource.Cmd: TCommandSet;
+function TSource.Command: TCommandSet;
 begin
      Repeat
            Result := FCmdList.Item(Token(FIdx));
