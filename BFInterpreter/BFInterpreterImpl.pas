@@ -60,7 +60,7 @@ begin
                      bfLeft      : MoveLeft(Times);
                      bfAdd       : Cell.Add(Times);
                      bfSub       : Cell.Sub(Times);
-                     bfWrite     : FOutput := FOutput + Chr(Cell.Value);
+                     bfWrite     : FOutput := FOutput + StringOfChar(Chr(Cell.Value), Times);
                      bfRead      : Cell.Define(FInput.Value);
                      bfLoopStart : if Cell.Value = 0
                                       then FSource.SkipLoop;

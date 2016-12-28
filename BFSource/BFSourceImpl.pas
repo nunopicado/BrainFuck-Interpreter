@@ -45,7 +45,7 @@ begin
      Repeat
            Result := Command;
            Inc(Times);
-     Until (not (Result in [bfLeft, bfRight, bfAdd, bfSub])) or (Result <> FCmdList.Item(Token(FIdx)));
+     Until (Result in [bfRead, bfLoopStart, bfLoopStop]) or (Result <> FCmdList.Item(Token(FIdx)));
 end;
 
 function TSource.Command: TCommandSet;
