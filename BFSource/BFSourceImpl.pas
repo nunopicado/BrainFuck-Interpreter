@@ -17,15 +17,15 @@ type
       function Token(Idx: Integer): String;
     public
       constructor Create(CmdList: ICommandList; Source: String);
-      class function New(CmdList: ICommandList; Source: String): ISource;
-      class function NewBrainFuck(Source: String): ISource;
-      class function NewOok(Source: String): ISource;
-      class function NewMorseFuck(Source: String): ISource;
-      class function NewBitFuck(Source: String): ISource;
-      function Command: TCommandSet;
-      function IsValid: Boolean;
-      function SkipLoop: ISource;
-      function RestartLoop: ISource;
+      class function New(CmdList: ICommandList; Source: String) : ISource;
+      class function NewBrainFuck(Source: String)               : ISource;
+      class function NewOok(Source: String)                     : ISource;
+      class function NewMorseFuck(Source: String)               : ISource;
+      class function NewBitFuck(Source: String)                 : ISource;
+      function Command(out Times: Integer)                      : TCommandSet;
+      function IsValid                                          : Boolean;
+      function SkipLoop                                         : ISource;
+      function RestartLoop                                      : ISource;
     End;
 
 implementation
@@ -38,14 +38,15 @@ uses
 
 { TBFSource }
 
-function TSource.Command: TCommandSet;
+function TSource.Command(out Times: Integer): TCommandSet;
 begin
+     Times := 1;
      Repeat
            Result := FCmdList.Item(Token(FIdx));
            if Result = bfInvalid
               then Delete(FSource, FIdx, 1)
      Until (not IsValid) or (Result <> bfInvalid);
-     Inc(FIdx, FCmdList.TokenSize);
+     Inc(FIdx, FCmdList.TokenSize * Times);
 end;
 
 constructor TSource.Create(CmdList: ICommandList; Source: String);

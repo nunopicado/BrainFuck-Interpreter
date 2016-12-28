@@ -49,15 +49,17 @@ begin
 end;
 
 function TInterpreter.Run: IInterpreter;
+var
+   Times: Integer;
 begin
      Result := Self;
      while FSource.IsValid do
            with FTape do
-                case FSource.Command of
-                     bfRight     : MoveRight;
-                     bfLeft      : MoveLeft;
-                     bfAdd       : Cell.Add;
-                     bfSub       : Cell.Sub;
+                case FSource.Command(Times) of
+                     bfRight     : MoveRight(Times);
+                     bfLeft      : MoveLeft(Times);
+                     bfAdd       : Cell.Add(Times);
+                     bfSub       : Cell.Sub(Times);
                      bfWrite     : FOutput := FOutput + Chr(Cell.Value);
                      bfRead      : Cell.Define(FInput.Value);
                      bfLoopStart : if Cell.Value = 0
