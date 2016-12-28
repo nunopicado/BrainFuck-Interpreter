@@ -12,11 +12,11 @@ type
     strict private
       FCell : Byte;
     public
-      class function New           : ITapeCell;
-      function Add                 : ITapeCell;
-      function Sub                 : ITapeCell;
-      function Value               : Byte;
-      function Define(Value: Byte) : ITapeCell;
+      class function New               : ITapeCell;
+      function Add(Times: Integer = 1) : ITapeCell;
+      function Sub(Times: Integer = 1) : ITapeCell;
+      function Value                   : Byte;
+      function Define(Value: Byte)     : ITapeCell;
     End;
 
     TTapeCellFactory = Reference to Function: ITapeCell;
@@ -28,11 +28,11 @@ type
     public
       constructor Create(CellFactory: TTapeCellFactory);
       destructor Destroy; Override;
-      class function New(CellFactory: TTapeCellFactory): ITape;
-      function Cell      : ITapeCell;
-      function MoveLeft  : ITape;
-      function MoveRight : ITape;
-      function AsString  : String;
+      class function New(CellFactory: TTapeCellFactory) : ITape;
+      function Cell                                     : ITapeCell;
+      function MoveLeft(Times: Integer = 1)             : ITape;
+      function MoveRight(Times: Integer = 1)            : ITape;
+      function AsString                                 : String;
     End;
 
 implementation
@@ -43,10 +43,10 @@ uses
 
 { TTapeCell }
 
-function TTapeCell.Add: ITapeCell;
+function TTapeCell.Add(Times: Integer = 1): ITapeCell;
 begin
      Result := Self;
-     Inc(FCell);
+     Inc(FCell, Times);
 end;
 
 function TTapeCell.Define(Value: Byte): ITapeCell;
@@ -60,10 +60,10 @@ begin
      Result := Create;
 end;
 
-function TTapeCell.Sub: ITapeCell;
+function TTapeCell.Sub(Times: Integer = 1): ITapeCell;
 begin
      Result := Self;
-     Dec(FCell);
+     Dec(FCell, Times);
 end;
 
 function TTapeCell.Value: Byte;
@@ -101,20 +101,20 @@ begin
      inherited;
 end;
 
-function TTape.MoveLeft: ITape;
+function TTape.MoveLeft(Times: Integer = 1): ITape;
 begin
-     if FIdx = 0
+     if FIdx-Times < 0
         then raise EInvalidOp.Create('Invalid operation: Already in the leftmost position.');
      Result := Self;
-     Dec(FIdx);
+     Dec(FIdx, Times);
 end;
 
-function TTape.MoveRight: ITape;
+function TTape.MoveRight(Times: Integer = 1): ITape;
 begin
      Result := Self;
-     Inc(FIdx);
-     if FIdx = FCells.Count
-        then FCells.Add(FCellFactory);
+     Inc(FIdx, Times);
+     while FIdx > Pred(FCells.Count) do
+           FCells.Add(FCellFactory);
 end;
 
 class function TTape.New(CellFactory: TTapeCellFactory): ITape;
