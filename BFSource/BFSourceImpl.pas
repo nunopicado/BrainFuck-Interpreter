@@ -22,7 +22,8 @@ type
       class function NewOok(Source: String)                     : ISource;
       class function NewMorseFuck(Source: String)               : ISource;
       class function NewBitFuck(Source: String)                 : ISource;
-      function Command(out Times: Integer)                      : TCommandSet;
+      function Command                                          : TCommandSet; Overload;
+      function Command(out Times: Integer)                      : TCommandSet; Overload;
       function IsValid                                          : Boolean;
       function SkipLoop                                         : ISource;
       function RestartLoop                                      : ISource;
@@ -40,13 +41,21 @@ uses
 
 function TSource.Command(out Times: Integer): TCommandSet;
 begin
-     Times := 1;
+     Times := 0;
      Repeat
+           Result := Command;
+           Inc(Times);
+     Until (not (Result in [bfLeft, bfRight, bfAdd, bfSub])) or (Result <> FCmdList.Item(Token(FIdx)));
+end;
+
+function TSource.Command: TCommandSet;
+begin
+     repeat
            Result := FCmdList.Item(Token(FIdx));
            if Result = bfInvalid
-              then Delete(FSource, FIdx, 1)
-     Until (not IsValid) or (Result <> bfInvalid);
-     Inc(FIdx, FCmdList.TokenSize * Times);
+              then Delete(FSource, FIdx, 1);
+     until (not IsValid) or (Result <> bfInvalid);
+     Inc(FIdx, FCmdList.TokenSize);
 end;
 
 constructor TSource.Create(CmdList: ICommandList; Source: String);
