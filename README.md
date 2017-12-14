@@ -15,13 +15,13 @@ The idea behind this project **is not** to be the best or more efficient *BrainF
 
 *BrainFuck* Interpreter relies on an number of objects that communicate in order to achieve the interpreter goal. Each object is interface based to allow different implementations, and each object has it's own well defined mission.
 
-* IBFInterpreter - Represents the Interpreter. This is the main object where *BrainFuck* logic is applied
-* IBFCommandList - Represents the list of available commands for the language being used. 
-* IBFInput - Represents the input string, which holds the characters the source code will try to read
-* IBFStack - Represent the list of cells where the source code logic is applied
-* IBFCell - Represents a single cell in the stack
-* IBFCellFactory - Represent a factory IBFStack implementers use to instantiate IBFCells
-* IBFSource - Represents the source code
+* **`IBFInterpreter`** - Represents the Interpreter. This is the main object where *BrainFuck* logic is applied
+* **`IBFCommandList`** - Represents the list of available commands for the language being used. 
+* **`IBFInput`** - Represents the input string, which holds the characters the source code will try to read
+* **`IBFStack`** - Represent the list of cells where the source code logic is applied
+* **`IBFCell`** - Represents a single cell in the stack
+* **`IBFCellFactory`** - Represent a factory IBFStack implementers use to instantiate IBFCells
+* **`IBFSource`** - Represents the source code
 
 
 ### Usage
@@ -30,17 +30,17 @@ To use ***BrainFuck* Interpreter**, you need to instantiate all the classes, and
 
 ```
 Write(
-      TBFInterpreter.New(
-                         TBFSource.NewBrainFuck(
-                                                '>++++++++[-<+++++++++>]<.>>+>-[+]++>++>+++[>[->+++<<+++>]'+
-                                                '<<]>-----.>->+++..+++.>-.<<+[>[+>+]>>]<--------------.>>.'+
-                                                '+++.------.--------.>+.>+.'
-                                               ),
-                         TBFStack.New
-                        )
-                    .Run
-                    .AsString
-     );
+  TBFInterpreter.New(
+    TBFSource.NewBrainFuck(
+      '>++++++++[-<+++++++++>]<.>>+>-[+]++>++>+++[>[->+++<<+++>]'+
+      '<<]>-----.>->+++..+++.>-.<<+[>[+>+]>>]<--------------.>>.'+
+      '+++.------.--------.>+.>+.'
+    ),
+    TBFStack.New
+  )
+    .Run
+    .AsString
+);
 ```
 
 
